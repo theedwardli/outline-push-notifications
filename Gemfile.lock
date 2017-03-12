@@ -41,11 +41,6 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.2.3)
     byebug (9.0.6)
-    cells (4.1.6)
-      declarative-builder (< 0.2.0)
-      declarative-option (< 0.2.0)
-      tilt (>= 1.4, < 3)
-      uber (< 0.2.0)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.1.x)
@@ -94,6 +89,10 @@ GEM
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
     pg (0.20.0)
+    phony (2.15.41)
+    phony_rails (0.14.5)
+      activesupport (>= 3.0)
+      phony (~> 2.15)
     pipetree (0.1.1)
     rack (1.6.5)
     rack-superfeedr (0.4.6)
@@ -166,8 +165,6 @@ GEM
       declarative
       reform (>= 2.2.0, < 3.0.0)
       trailblazer-operation (>= 0.0.12, < 0.1.0)
-    trailblazer-cells (0.0.3)
-      cells (>= 4.1.0.rc1, < 5.0.0)
     trailblazer-loader (0.1.0)
     trailblazer-operation (0.0.13)
       declarative
@@ -205,6 +202,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   pg
+  phony_rails
   rails (= 4.2.1)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
@@ -212,7 +210,6 @@ DEPENDENCIES
   sqlite3
   superfeedr_engine
   trailblazer
-  trailblazer-cells
   trailblazer-rails
   turbolinks
   twilio-ruby
