@@ -102,11 +102,7 @@ class Projects::Outline::SubscribersController < ApplicationController
         response.phone_number # if invalid, throws an exception. if valid, no problems.
         return true
       rescue => e
-        if e.code == 20404
-          return false
-        else
-          raise e
-        end 
+        return false
       end
     end
 end
