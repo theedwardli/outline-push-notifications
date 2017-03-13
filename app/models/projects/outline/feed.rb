@@ -7,7 +7,7 @@ class Projects::Outline::Feed
 	def initialize 
 		Rails.logger.info 'Subscribing to The Outline'
 		SuperfeedrEngine::Engine.subscribe(self, { retrieve: false })
-		@twilio_client = boot_twilio
+		@twilio_client = message_client
 	end
 
 	def id
@@ -28,7 +28,7 @@ class Projects::Outline::Feed
 
 		# Add threading/async in the future
 		new_items.each do |item|
-			Projects::Outline::Subscriber.all.each do |subscriber|
+			Projects::Outline::Subscriber.all.where(verified: true).each do |subscriber|
 				@twilio_client.messages.create(
 			    from: ENV["TWILIO_NUMBER"],
 			    to: subscriber.phone,
