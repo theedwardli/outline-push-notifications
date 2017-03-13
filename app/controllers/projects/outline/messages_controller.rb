@@ -3,7 +3,7 @@ class Projects::Outline::MessagesController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 
   def reply
-  	@twilio_client = boot_twilio
+  	@twilio_client = message_client
     from_number = params["From"]
     message_body = params["Body"]
     case message_body
