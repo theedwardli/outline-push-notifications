@@ -24,6 +24,7 @@ class Projects::Outline::Feed
 
 	def notified params
 		Rails.logger.info "A new article was published at #{Time.now}"
+		Rails.logger.info params
 		new_items = params['items']
 
 		# Add threading/async in the future
@@ -36,5 +37,10 @@ class Projects::Outline::Feed
 		    )
 			end
 		end
+	end
+
+	def self.find feed_id
+		feed = Projects::Outline::Feed.instance
+		feed if feed.id == feed_id
 	end
 end

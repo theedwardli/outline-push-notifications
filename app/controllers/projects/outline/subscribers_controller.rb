@@ -37,11 +37,13 @@ class Projects::Outline::SubscribersController < ApplicationController
     # delete pin after some minutes?
     @projects_outline_subscriber = Projects::Outline::Subscriber.find_by(phone: params[:hidden_phone])
     @projects_outline_subscriber.verify_pin(params[:pin])
-    message_client.messages.create(
-      from: ENV["TWILIO_NUMBER"],
-      to: @projects_outline_subscriber.phone,
-      body: "You have subscribed to notifications from The Outline. To unsubscribe, text \"UNSUB\" to this number."
-    )
+    if @projects_outline_subscriber.verified
+      message_client.messages.create(
+        from: ENV["TWILIO_NUMBER"],
+        to: @projects_outline_subscriber.phone,
+        body: "You have subscribed to notifications from The Outline. To unsubscribe, text \"UNSUB\" to this number."
+      )
+    end
     respond_to do |format|
       format.html { redirect_to new_projects_outline_subscriber_path }
       format.js
