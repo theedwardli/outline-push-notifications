@@ -14,19 +14,19 @@ class Projects::Outline::SubscribersController < ApplicationController
     @projects_outline_subscriber = Projects::Outline::Subscriber.new(projects_outline_subscriber_params)
     begin 
       if valid_number?(@projects_outline_subscriber.phone) && @projects_outline_subscriber.save 
-        # successfully created a new subscriber
+        Rails.logger.info "Validations complete"
         new_subscriber_responder
       else
-        # validations failed
+        Rails.logger.info "Validations failed"
         bad_phone_responder
       end
     rescue ActiveRecord::RecordNotUnique
-      @projects_outline_subscriber = Projects::Outline::Subscriber.find_by(@projects_outline_subscriber.phone)
+      @projects_outline_subscriber = Projects::Outline::Subscriber.find_by_phone(@projects_outline_subscriber.phone)
       if @projects_outline_subscriber.verified?
-        # subscriber already exists
+        Rails.logger.info "Subscriber already exists"
         subscriber_exists_responder
       else
-        # subscriber exists but isn't verified
+        Rails.logger.info "Subscriber isn't verified"
         resend_pin_responder
       end
     end    
