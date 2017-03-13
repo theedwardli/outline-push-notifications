@@ -55,7 +55,9 @@ group :development, :test do
 end
 
 group :production do
-	# Setup db
-	gem 'pg'
+  # Setup db
+  gem 'pg'
+  # Send logs to STDOUT
+  gem 'rails_12factor', group: :production
 end
 
