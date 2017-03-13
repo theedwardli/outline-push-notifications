@@ -11,12 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170312061912) do
+ActiveRecord::Schema.define(version: 20170313004825) do
 
   create_table "projects_outline_subscribers", force: :cascade do |t|
     t.string   "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "pin"
+    t.boolean  "verified"
   end
 
   add_index "projects_outline_subscribers", ["phone"], name: "index_projects_outline_subscribers_on_phone", unique: true
