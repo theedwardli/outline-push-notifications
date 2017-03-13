@@ -18,7 +18,7 @@ class Projects::Outline::MessagesController < ApplicationController
 
 	  def subscribe phone_number
 	  	# This is very hacky. Only doing this because I had issues with Trailblazer Operations not being recognized.
-	  	new_subscriber = Projects::Outline::Subscriber.new({ phone: phone_number })
+	  	new_subscriber = Projects::Outline::Subscriber.new({ phone: phone_number, verified: true })
 	  	begin 
 	  		new_subscriber.save!
 	  	rescue ActiveRecord::RecordNotUnique
