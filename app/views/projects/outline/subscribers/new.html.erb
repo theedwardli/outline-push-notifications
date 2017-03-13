@@ -1,0 +1,33 @@
+<div id="send-pin">
+	<h1>Welcome!</h1>
+	<p>
+		This is a unofficial push notification system for 
+		<a href='www.theoutline.com'>The Outline.</a><br/>
+		We'll shoot you a text whenever new articles are published.
+	</p>
+	<h3>Enter your phone number to get started</h3>
+  <%= form_for @projects_outline_subscriber, remote: true do |f| %>
+    <div class="form-group">
+      <%= f.text_field :phone %>
+    </div>
+    <%= f.submit "Send PIN", class: "btn btn-primary", id: 'send-pin-link' %>
+  <% end %>
+</div>
+
+<div id="verify-pin">
+	<p id="resend-text">
+		That phone number exists, but is unverified. We sent you a confirmation code again.
+	</p>
+	<h3>Enter your PIN</h3>
+	<%= form_tag projects_outline_subscribers_verify_path, remote: true do |f| %>
+	  <%= hidden_field_tag 'hidden_phone', '' %>
+	  <div class="form-group">
+	    <%= text_field_tag :pin %>
+	  </div>
+	  <%= submit_tag "Verify PIN", class: "btn btn-primary" %>
+	  <% end %>
+</div>
+
+<div id="status-box" class="alert alert-success">
+  <p id="status-message">Status: Haven’t done anything yet</p>
+</div>

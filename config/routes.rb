@@ -1,11 +1,12 @@
 Rails.application.routes.draw do
   mount SuperfeedrEngine::Engine => SuperfeedrEngine::Engine.base_path
 
-  root 'application#hello'
+  root 'projects/outline/subscribers#new'
 
   namespace :projects do
     namespace :outline do 
-      resources :subscribers, only: [:index, :new, :create, :destroy]
+      resources :subscribers, only: [:new, :create]
+      post 'subscribers/verify' => "subscribers#verify"
       resources :messages do
         collection do
           post 'reply'
