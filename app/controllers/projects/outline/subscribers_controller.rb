@@ -1,5 +1,6 @@
 class Projects::Outline::SubscribersController < ApplicationController
   include Projects::Outline::MessagesHelper 
+  skip_before_filter :verify_authenticity_token
 
   before_action :set_projects_outline_subscriber, only: [:show, :edit, :update, :destroy] # fine tune this
 
@@ -36,6 +37,11 @@ class Projects::Outline::SubscribersController < ApplicationController
     # delete pin after some minutes?
     @projects_outline_subscriber = Projects::Outline::Subscriber.find_by(phone: params[:hidden_phone])
     @projects_outline_subscriber.verify_pin(params[:pin])
+    message_client.messages.create(
+      from: ENV["TWILIO_NUMBER"],
+      to: @projects_outline_subscriber.phone,
+      body: "You have subscribed to notifications from The Outline. To unsubscribe, text \"UNSUB\" to this number."
+    )
     respond_to do |format|
       format.html { redirect_to new_projects_outline_subscriber_path }
       format.js
@@ -54,8 +60,8 @@ class Projects::Outline::SubscribersController < ApplicationController
     end
 
     def send_pin
-      twilio_client = message_client
-      twilio_client.messages.create(
+      @twilio_client = message_client
+      @twilio_client.messages.create(
         to: @projects_outline_subscriber.phone,
         from: ENV['TWILIO_NUMBER'],
         body: "Your PIN is #{@projects_outline_subscriber.pin}"

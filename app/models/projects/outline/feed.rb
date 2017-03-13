@@ -6,8 +6,8 @@ class Projects::Outline::Feed
 
 	def initialize 
 		Rails.logger.info 'Subscribing to The Outline'
-		SuperfeedrEngine::Engine.subscribe(self, { retrieve: false })
 		@twilio_client = message_client
+		SuperfeedrEngine::Engine.subscribe(self, { retrieve: false })
 	end
 
 	def id
