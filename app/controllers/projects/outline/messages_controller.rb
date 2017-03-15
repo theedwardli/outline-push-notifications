@@ -3,7 +3,6 @@ class Projects::Outline::MessagesController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 
   def reply
-  	@twilio_client = message_client
     from_number = params["From"]
     message_body = params["Body"]
     case message_body
@@ -14,34 +13,22 @@ class Projects::Outline::MessagesController < ApplicationController
     end
   end
 
-  private 
+  private
 
 	  def subscribe phone_number
 	  	# This is very hacky. Only doing this because I had issues with Trailblazer Operations not being recognized.
 	  	new_subscriber = Projects::Outline::Subscriber.new({ phone: phone_number, verified: true })
-	  	begin 
+	  	begin
 	  		new_subscriber.save!
 	  	rescue ActiveRecord::RecordNotUnique
-	  		Rails.logger.info("Could not add subscription for #{phone_number} via text: RecordNotUnique")
-		    @twilio_client.messages.create(
-		      from: ENV["TWILIO_NUMBER"],
-		      to: phone_number,
-		      body: "You are already subscribed to The Outline."
-		    )
+	  		Rails.logger.info "#{phone_number} is already subscribed"
+		    send_already_subscribed_message phone_number
 		  rescue ActiveRecord::RecordInvalid
-	  		Rails.logger.info("Could not add subscription for #{phone_number} via text")
-		  	@twilio_client.messages.create(
-		      from: ENV["TWILIO_NUMBER"],
-		      to: phone_number,
-		      body: "Something went wrong and we couldn't add your subscription. Please try again later."
-		    )
-		  else 
-	  		Rails.logger.info("Added subscription for #{phone_number} via text")
-		    @twilio_client.messages.create(
-		      from: ENV["TWILIO_NUMBER"],
-		      to: phone_number,
-		      body: "You have subscribed to notifications from The Outline. To unsubscribe, text \"UNSUB\" to this number."
-		    )
+	  		Rails.logger.error "Could not add subscription for #{phone_number} via text"
+	  		send_error_message phone_number
+		  else
+	  		Rails.logger.info "Added subscription for #{phone_number} via text"
+		    send_subscribe_message phone_number
 		  end
 	  end
 
@@ -49,19 +36,11 @@ class Projects::Outline::MessagesController < ApplicationController
 	    # This is very hacky. Only doing this because I had issues with Trailblazer Operations not being recognized.
 	  	subscriber = Projects::Outline::Subscriber.find_by_phone(phone_number)
 	  	if subscriber.destroy
-	  		Rails.logger.info("Removed subscription for #{phone_number} via text")
-		    @twilio_client.messages.create(
-		      from: ENV["TWILIO_NUMBER"],
-		      to: phone_number,
-		      body: "You have been unsubscribed from notifications. To resubscribe, text \"SUB\" to this number."
-		    )
-		  else 
-	  		Rails.logger.info("Could not remove subscription for #{phone_number} via text")
-		  	@twilio_client.messages.create(
-		      from: ENV["TWILIO_NUMBER"],
-		      to: phone_number,
-		      body: "Something went wrong and we couldn't remove your subscription. Please try again later."
-		    )
+	  		Rails.logger.error "Removed subscription for #{phone_number} via text"
+		    send_unsubscribe_message phone_number
+		  else
+	  		Rails.logger.error "Could not remove subscription for #{phone_number} via text"
+		  	send_error_message phone_number
 		  end
 	  end
 end

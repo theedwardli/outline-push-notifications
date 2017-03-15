@@ -1,5 +1,5 @@
 class Projects::Outline::SubscribersController < ApplicationController
-  include Projects::Outline::MessagesHelper 
+  include Projects::Outline::MessagesHelper
   skip_before_filter :verify_authenticity_token
 
   before_action :set_projects_outline_subscriber, only: [:show, :edit, :update, :destroy] # fine tune this
@@ -13,12 +13,12 @@ class Projects::Outline::SubscribersController < ApplicationController
   # POST /projects/outline/subscribers.json
   def create
     @projects_outline_subscriber = Projects::Outline::Subscriber.new(projects_outline_subscriber_params)
-    begin 
-      if valid_number?(@projects_outline_subscriber.phone) && @projects_outline_subscriber.save 
+    begin
+      if valid_number?(@projects_outline_subscriber.phone) && @projects_outline_subscriber.save
         Rails.logger.info "Validations complete"
         new_subscriber_responder
       else
-        Rails.logger.info "Validations failed"
+        Rails.logger.error "Validations failed"
         bad_phone_responder
       end
     rescue ActiveRecord::RecordNotUnique
@@ -30,19 +30,15 @@ class Projects::Outline::SubscribersController < ApplicationController
         Rails.logger.info "Subscriber isn't verified"
         resend_pin_responder
       end
-    end    
+    end
   end
 
   def verify
-    # delete pin after some minutes?
+    # TODO: delete pin after some minutes?
     @projects_outline_subscriber = Projects::Outline::Subscriber.find_by(phone: params[:hidden_phone])
     @projects_outline_subscriber.verify_pin(params[:pin])
     if @projects_outline_subscriber.verified
-      message_client.messages.create(
-        from: ENV["TWILIO_NUMBER"],
-        to: @projects_outline_subscriber.phone,
-        body: "You have subscribed to notifications from The Outline. To unsubscribe, text \"UNSUB\" to this number."
-      )
+      send_subscribe_message @projects_outline_subscriber.phone
     end
     respond_to do |format|
       format.html { redirect_to new_projects_outline_subscriber_path }
@@ -51,23 +47,13 @@ class Projects::Outline::SubscribersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_projects_outline_subscriber
       @projects_outline_subscriber = Projects::Outline::Subscriber.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def projects_outline_subscriber_params
       params.require(:projects_outline_subscriber).permit(:phone)
-    end
-
-    def send_pin
-      @twilio_client = message_client
-      @twilio_client.messages.create(
-        to: @projects_outline_subscriber.phone,
-        from: ENV['TWILIO_NUMBER'],
-        body: "Your PIN is #{@projects_outline_subscriber.pin}"
-      )
     end
 
     def subscriber_exists_responder
@@ -78,7 +64,7 @@ class Projects::Outline::SubscribersController < ApplicationController
 
     def resend_pin_responder
       @projects_outline_subscriber.generate_pin
-      send_pin
+      send_pin(@projects_outline_subscriber.phone, @projects_outline_subscriber.pin)
       respond_to do |format|
         format.js { render 'resend.js.erb' }
       end
@@ -86,7 +72,7 @@ class Projects::Outline::SubscribersController < ApplicationController
 
     def new_subscriber_responder
       @projects_outline_subscriber.generate_pin
-      send_pin
+      send_pin(@projects_outline_subscriber.phone, @projects_outline_subscriber.pin)
       respond_to do |format|
         format.js { render 'create.js.erb' }
       end
@@ -95,16 +81,6 @@ class Projects::Outline::SubscribersController < ApplicationController
     def bad_phone_responder
       respond_to do |format|
         format.js { render 'bad_phone.js.erb' }
-      end
-    end
-
-    def valid_number? number
-      begin
-        response = lookup_client.phone_numbers.get(number)
-        response.phone_number # if invalid, throws an exception. if valid, no problems.
-        return true
-      rescue => e
-        return false
       end
     end
 end
