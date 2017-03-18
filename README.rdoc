@@ -1,6 +1,8 @@
 == README
 
-This is an unofficial push notification system for The Outline.
+This is an unofficial push notification system for {The Outline}[https://theoutline.com/].
 A text message is sent to all subscribers whenever a new article is published.
 
-Live demo: https://afternoon-beyond-53328.herokuapp.com/
+Core technologies: Rails, Superfeedr, and Twilio.
+
+Check out the live demo here[https://afternoon-beyond-53328.herokuapp.com].
