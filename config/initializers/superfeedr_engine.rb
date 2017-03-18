@@ -3,7 +3,7 @@
 # * url: should be the main feed url
 # * id: a unique id (string) for each feed (can be the primary key in your relational table)
 # * secret: a secret which should never change and be unique for each feed. It must be hard to guess. (a md5 or sha1 string works fine!)
-SuperfeedrEngine::Engine.feed_class = "Projects::Outline::Feed"
+SuperfeedrEngine::Engine.feed_class = "Feed"
 
 # Base path for the engine don't forget the trailing / and make it hard to guess!
 SuperfeedrEngine::Engine.base_path = "/superfeedr_engine/"
@@ -25,5 +25,5 @@ SuperfeedrEngine::Engine.port = 80
 
 # Create Outline Feed instance
 Rails.application.config.after_initialize do
-	Projects::Outline::Feed.instance
+	Feed.instance
 end

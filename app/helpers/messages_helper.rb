@@ -1,5 +1,5 @@
 # TODO: Create singleton message_client and reuse
-module Projects::Outline::MessagesHelper
+module MessagesHelper
   def valid_number? number
     begin
       response = lookup_client.phone_numbers.get(number)

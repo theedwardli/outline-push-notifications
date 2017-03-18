@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170313004825) do
+ActiveRecord::Schema.define(version: 20170318025346) do
 
-  create_table "projects_outline_subscribers", force: :cascade do |t|
+  create_table "subscribers", force: :cascade do |t|
     t.string   "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -21,6 +21,6 @@ ActiveRecord::Schema.define(version: 20170313004825) do
     t.boolean  "verified"
   end
 
-  add_index "projects_outline_subscribers", ["phone"], name: "index_projects_outline_subscribers_on_phone", unique: true
+  add_index "subscribers", ["phone"], name: "index_subscribers_on_phone", unique: true
 
 end

@@ -1,11 +1,11 @@
-<% if @projects_outline_subscriber.verified %>
+<% if @subscriber.verified %>
   $('#verify-pin').hide()
   $('#resend-text').hide()
   $('#status-box').removeClass()
   $('#status-box').addClass('alert alert-success')
   $('#status-message').text('Congrats! You are now subscribed to push notifications from The Outline.')
 	$('#send-pin').show()
-	$('#projects_outline_subscriber_phone').val('')
+	$('#subscriber_phone').val('')
 <% else %>
   $('#status-box').removeClass()
   $('#status-box').addClass('alert alert-warning')

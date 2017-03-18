@@ -1,8 +1,8 @@
 require 'digest/sha1'
 
-class Projects::Outline::Feed
+class Feed
 	include Singleton
-	include Projects::Outline::MessagesHelper
+	include MessagesHelper
 
 	def initialize 
 		Rails.logger.info 'Subscribing to The Outline'
@@ -29,7 +29,7 @@ class Projects::Outline::Feed
 
 		# Add threading/async in the future
 		new_items.each do |item|
-			Projects::Outline::Subscriber.all.where(verified: true).each do |subscriber|
+			Subscriber.all.where(verified: true).each do |subscriber|
 				@twilio_client.messages.create(
 			    from: ENV["TWILIO_NUMBER"],
 			    to: subscriber.phone,
@@ -40,7 +40,7 @@ class Projects::Outline::Feed
 	end
 
 	def self.find feed_id
-		feed = Projects::Outline::Feed.instance
+		feed = Feed.instance
 		feed if feed.id == feed_id
 	end
 end

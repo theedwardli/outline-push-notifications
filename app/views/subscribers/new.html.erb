@@ -6,7 +6,7 @@
 		We'll shoot you a text whenever new articles are published.
 	</p>
 	<h3>Enter your phone number to get started</h3>
-  <%= form_for @projects_outline_subscriber, remote: true do |f| %>
+  <%= form_for @subscriber, remote: true do |f| %>
     <div class="form-group">
       <%= f.text_field :phone %>
     </div>
@@ -19,7 +19,7 @@
 		That phone number exists, but is unverified. We sent you a confirmation code again.
 	</p>
 	<h3>Enter your PIN</h3>
-	<%= form_tag projects_outline_subscribers_verify_path, remote: true do |f| %>
+	<%= form_tag subscribers_verify_path, remote: true do |f| %>
 	  <%= hidden_field_tag 'hidden_phone', '' %>
 	  <div class="form-group">
 	    <%= text_field_tag :pin %>

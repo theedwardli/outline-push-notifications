@@ -1,5 +1,5 @@
-class Projects::Outline::MessagesController < ApplicationController
-	include Projects::Outline::MessagesHelper
+class MessagesController < ApplicationController
+	include MessagesHelper
 	skip_before_filter :verify_authenticity_token
 
   def reply
@@ -16,8 +16,7 @@ class Projects::Outline::MessagesController < ApplicationController
   private
 
 	  def subscribe phone_number
-	  	# This is very hacky. Only doing this because I had issues with Trailblazer Operations not being recognized.
-	  	new_subscriber = Projects::Outline::Subscriber.new({ phone: phone_number, verified: true })
+	  	new_subscriber = Subscriber.new({ phone: phone_number, verified: true })
 	  	begin
 	  		new_subscriber.save!
 	  	rescue ActiveRecord::RecordNotUnique
@@ -33,8 +32,7 @@ class Projects::Outline::MessagesController < ApplicationController
 	  end
 
 	  def unsubscribe phone_number
-	    # This is very hacky. Only doing this because I had issues with Trailblazer Operations not being recognized.
-	  	subscriber = Projects::Outline::Subscriber.find_by_phone(phone_number)
+	  	subscriber = Subscriber.find_by_phone(phone_number)
 	  	if subscriber.destroy
 	  		Rails.logger.error "Removed subscription for #{phone_number} via text"
 		    send_unsubscribe_message phone_number

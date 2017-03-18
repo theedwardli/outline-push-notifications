@@ -1,16 +1,12 @@
 Rails.application.routes.draw do
-  root 'projects/outline/subscribers#new'
+  root 'subscribers#new'
 
-  namespace :projects do
-    namespace :outline do 
-      resources :subscribers, only: [:new, :create]
-      post 'subscribers/verify' => 'subscribers#verify'
+  resources :subscribers, only: [:new, :create]
+  post 'subscribers/verify' => 'subscribers#verify'
 
-      resources :messages do
-        collection do
-          post 'reply'
-        end
-      end
+  resources :messages do
+    collection do
+      post 'reply'
     end
   end
 
